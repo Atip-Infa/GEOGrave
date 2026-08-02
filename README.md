@@ -5,7 +5,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Docker](https://img.shields.io/badge/docker-ready-blue)](docker-compose.yml)
 
-> 🏆 **Built for [GeoSpark Hackathon](https://geospark.io/) — Geospatial Innovation Driving Future Economies**
+> 🏆 **Built for GeoSpark Hackathon — Geospatial Innovation Driving Future Economies**
 
 A map-based incident reporting application for logging and visualising road fatality data. Field officers drop a pin on an interactive map, fill in a structured form, and the record is stored with geospatial indexing for proximity search. Public visitors can view and submit reports; authenticated staff can edit, delete, and see reporter PII.
 
