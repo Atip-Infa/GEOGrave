@@ -1,6 +1,6 @@
 # GEOGrave
 
-[![CI](https://github.com/Atip-Infa/geograve/actions/workflows/ci.yml/badge.svg)](https://github.com/Atip-Infa/geograve/actions/workflows/ci.yml)
+[![CI](https://github.com/Atip-Infa/GEOGrave/actions/workflows/ci.yml/badge.svg)](https://github.com/Atip-Infa/GEOGrave/actions/workflows/ci.yml)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D22.5-brightgreen)](https://nodejs.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Docker](https://img.shields.io/badge/docker-ready-blue)](docker-compose.yml)
@@ -8,6 +8,34 @@
 A map-based incident reporting application for logging and visualising road fatality data. Field officers drop a pin on an interactive map, fill in a structured form, and the record is stored with geospatial indexing for proximity search. Public visitors can view and submit reports; authenticated staff can edit, delete, and see reporter PII.
 
 > **Data sensitivity notice.** This application stores personal data including victim names, ages, cause of death, and reporter national ID numbers. Read the [Security](#security) and [Deployment](docs/deployment.md) guides before running in any environment beyond your local machine.
+
+---
+
+## Screenshots
+
+### หน้าหลัก (Homepage)
+
+![Homepage 1](screenshots/homepage1.png)
+![Homepage 2](screenshots/homepage2.png)
+![Homepage 3](screenshots/homepage3.png)
+![Homepage 4](screenshots/homepage4.png)
+![Homepage 5](screenshots/homepage5.png)
+
+### เริ่มต้นใช้งาน (Report / Map Page)
+
+![Work Page 1](screenshots/workpage1.png)
+![Work Page 2](screenshots/workpage2.png)
+![Work Page 3](screenshots/workpage3.png)
+
+### คู่มือวิธีใช้ (Tutorial Page)
+
+![Tutorial Page](screenshots/tutorialpage.png)
+
+### เกี่ยวกับพวกเรา (About Us)
+
+![About Us 1](screenshots/aboutuspage1.png)
+![About Us 2](screenshots/aboutuspage2.png)
+![About Us 3](screenshots/aboutuspage3.png)
 
 ---
 
@@ -125,7 +153,7 @@ Requires **Node.js 22.5+** (`node --version`). The database layer uses the built
 
 ```bash
 # 1. Clone and enter the repository
-git clone https://github.com/Atip-Infa/geograve.git
+git clone https://github.com/Atip-Infa/GEOGrave.git
 cd geograve
 
 # 2. Configure secrets
