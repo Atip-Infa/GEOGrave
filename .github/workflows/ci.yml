@@ -1,0 +1,80 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+
+  test:
+    name: Test (Node ${{ matrix.node-version }})
+    runs-on: ubuntu-latest
+    needs: lint
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [22.x, 24.x]
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+      - run: npm ci
+      - name: Run test suite
+        run: npm test -- --coverage
+      - name: Upload coverage report
+        if: matrix.node-version == '22.x'
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: backend/coverage/
+          retention-days: 7
+
+  docker-build:
+    name: Docker build and smoke test
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build image
+        run: docker build -t geograve:ci ./backend
+      - name: Smoke-test container boots and passes healthcheck
+        run: |
+          docker run -d --name geograve-ci \
+            -e JWT_SECRET=ci-only-secret-not-for-production \
+            -e ADMIN_USERNAME=admin \
+            -e ADMIN_PASSWORD=CiOnlyPassword123! \
+            -p 3000:3000 geograve:ci
+          echo "Waiting for container to become healthy..."
+          for i in $(seq 1 15); do
+            if curl -sf http://localhost:3000/healthz; then
+              echo "Container is healthy"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "Container never became healthy"
+          docker logs geograve-ci
+          exit 1

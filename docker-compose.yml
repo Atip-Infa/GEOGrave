@@ -1,0 +1,27 @@
+services:
+  geograve:
+    build: ./backend
+    container_name: geograve
+    env_file:
+      - ./backend/.env
+    environment:
+      - NODE_ENV=production
+    ports:
+      - "3002:3000"
+    volumes:
+      # Persistent data — survive container restarts and rebuilds
+      - ./backend/data:/app/data
+      - ./backend/uploads:/app/uploads
+    restart: unless-stopped
+    # Run the container filesystem read-only; only the two volume-mounted
+    # directories above can be written to. The /tmp tmpfs covers any
+    # ephemeral scratch space the Node runtime may need.
+    read_only: true
+    tmpfs:
+      - /tmp
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/healthz', r => process.exit(r.statusCode===200?0:1)).on('error', () => process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s

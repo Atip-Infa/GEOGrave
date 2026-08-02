@@ -1,0 +1,1304 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GEOGrave</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='16' fill='%231c2b3a'/%3E%3Crect x='44' y='8' width='12' height='32' rx='2' fill='%23ff6b5e'/%3E%3Crect x='32' y='18' width='36' height='12' rx='2' fill='%23ff6b5e'/%3E%3Crect x='18' y='44' width='64' height='44' rx='8' fill='none' stroke='%23fff' stroke-width='4'/%3E%3Crect x='22' y='48' width='56' height='24' rx='4' fill='%23ff6b5e' opacity='.8'/%3E%3Ccircle cx='50' cy='82' r='6' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- Leaflet + Leaflet.markercluster CSS/JS are no longer loaded here.
+     public/js/lazy-leaflet.js injects them on demand, the first time the
+     map is actually opened, so pages that never touch the map (home,
+     guide, about) don't pay that ~180KB cost. -->
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<a href="#main-content" class="skip-link">ข้ามไปยังเนื้อหาหลัก</a>
+
+<div id="toast-container" class="toast-container" role="status" aria-live="polite" aria-atomic="true"></div>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark">GEO<span class="brand-mark-accent">Grave</span></span>
+    <span class="brand-tagline">Respectful Journeys, Trusted Hands</span>
+  </div>
+  <button class="nav-toggle" id="nav-toggle" aria-label="เปิด/ปิดเมนู" aria-expanded="false" aria-controls="nav">
+    <span></span><span></span><span></span>
+  </button>
+  <nav class="nav" id="nav" aria-label="เมนูหลัก">
+    <a href="#home" data-page="home" class="nav-link active">หน้าหลัก</a>
+    <a href="#report" data-page="report" class="nav-link">เริ่มต้นใช้งาน</a>
+    <a href="#guide" data-page="guide" class="nav-link">คู่มือวิธีใช้</a>
+    <a href="#about" data-page="about" class="nav-link">เกี่ยวกับพวกเรา</a>
+    <button type="button" id="auth-btn" class="nav-link auth-btn">เข้าสู่ระบบเจ้าหน้าที่</button>
+  </nav>
+</header>
+
+<main id="main-content">
+
+  <!-- HOME PAGE -->
+  <section id="page-home" class="page active">
+
+    <!-- HERO — unchanged -->
+    <div class="hero">
+      <div class="hero-content">
+        <div class="hero-badge">
+          <div class="hero-logo-icon" aria-hidden="true">
+            <svg viewBox="0 0 80 90" xmlns="http://www.w3.org/2000/svg" width="68" height="76">
+              <!-- Cross -->
+              <rect x="35" y="2"  width="10" height="26" rx="2" fill="#1c2b3a"/>
+              <rect x="25" y="10" width="30" height="10" rx="2" fill="#1c2b3a"/>
+              <!-- Van body outline -->
+              <rect x="4" y="30" width="72" height="56" rx="10" fill="white" stroke="#1c2b3a" stroke-width="3.5"/>
+              <!-- Windscreen (dark) -->
+              <rect x="9"  y="34" width="62" height="26" rx="5" fill="#1c2b3a"/>
+              <!-- Bed icon in windscreen -->
+              <rect x="52" y="37" width="16" height="8"  rx="2" fill="white" opacity="0.85"/>
+              <rect x="62" y="35" width="5"  height="4"  rx="1" fill="white" opacity="0.85"/>
+              <line x1="53" y1="45" x2="53" y2="49" stroke="white" stroke-width="1.5" opacity="0.7"/>
+              <line x1="67" y1="45" x2="67" y2="49" stroke="white" stroke-width="1.5" opacity="0.7"/>
+              <!-- Grille row -->
+              <rect x="20" y="64" width="40" height="10" rx="3" fill="#1c2b3a"/>
+              <!-- Cross on grille -->
+              <rect x="37" y="65.5" width="6"  height="7"  rx="1" fill="white"/>
+              <rect x="34" y="67.5" width="12" height="3"  rx="1" fill="white"/>
+              <!-- Headlights -->
+              <rect x="8"  y="64" width="10" height="10" rx="2" fill="#e0e0e0" stroke="#1c2b3a" stroke-width="2"/>
+              <rect x="62" y="64" width="10" height="10" rx="2" fill="#e0e0e0" stroke="#1c2b3a" stroke-width="2"/>
+              <!-- Bumper -->
+              <rect x="14" y="76" width="52" height="6" rx="3" fill="#1c2b3a"/>
+              <rect x="22" y="77" width="8"  height="4"  rx="1" fill="#666"/>
+              <rect x="32" y="77" width="16" height="4"  rx="1" fill="#666"/>
+              <rect x="50" y="77" width="8"  height="4"  rx="1" fill="#666"/>
+              <!-- Wheels -->
+              <circle cx="18" cy="86" r="4" fill="#1c2b3a"/>
+              <circle cx="62" cy="86" r="4" fill="#1c2b3a"/>
+            </svg>
+          </div>
+          <h1>GEOGrave</h1>
+        </div>
+        <p class="hero-subtitle">ระบบแผนที่บันทึกและรายงานเหตุการณ์บนท้องถนน เพื่อการดูแลที่รวดเร็วและด้วยความเคารพ</p>
+        <a href="#report" data-page="report" class="cta-btn nav-link">เริ่มต้นใช้งาน &rarr;</a>
+      </div>
+    </div>
+
+    <div class="home-body">
+
+      <!-- ① DASHBOARD STATISTICS -->
+      <section class="home-section" aria-labelledby="dashboard-title">
+        <div class="home-section-header">
+          <h2 class="home-section-title" id="dashboard-title">
+            <span class="home-section-icon" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+            </span>
+            ภาพรวมสถิติ
+          </h2>
+          <span class="home-section-updated" id="stats-updated-at" aria-live="polite"></span>
+        </div>
+
+        <div class="dash-grid">
+          <!-- total -->
+          <div class="dash-card dash-card--primary">
+            <div class="dash-card-icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            </div>
+            <div class="dash-card-body">
+              <div class="dash-card-value" id="stat-total">—</div>
+              <div class="dash-card-label">รายงานทั้งหมด</div>
+            </div>
+          </div>
+
+          <!-- male -->
+          <div class="dash-card">
+            <div class="dash-card-icon dash-card-icon--blue" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>
+            </div>
+            <div class="dash-card-body">
+              <div class="dash-card-value dash-card-value--blue" id="stat-male">—</div>
+              <div class="dash-card-label">เพศชาย</div>
+            </div>
+            <div class="dash-card-bar" id="bar-male" aria-hidden="true"></div>
+          </div>
+
+          <!-- female -->
+          <div class="dash-card">
+            <div class="dash-card-icon dash-card-icon--coral" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>
+            </div>
+            <div class="dash-card-body">
+              <div class="dash-card-value dash-card-value--coral" id="stat-female">—</div>
+              <div class="dash-card-label">เพศหญิง</div>
+            </div>
+            <div class="dash-card-bar" id="bar-female" aria-hidden="true"></div>
+          </div>
+
+          <!-- unknown -->
+          <div class="dash-card">
+            <div class="dash-card-icon dash-card-icon--muted" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+            <div class="dash-card-body">
+              <div class="dash-card-value dash-card-value--muted" id="stat-unknown">—</div>
+              <div class="dash-card-label">ไม่ทราบเพศ</div>
+            </div>
+            <div class="dash-card-bar" id="bar-unknown" aria-hidden="true"></div>
+          </div>
+
+          <!-- today -->
+          <div class="dash-card">
+            <div class="dash-card-icon dash-card-icon--green" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            </div>
+            <div class="dash-card-body">
+              <div class="dash-card-value dash-card-value--green" id="stat-today">—</div>
+              <div class="dash-card-label">รายงานวันนี้</div>
+            </div>
+          </div>
+
+          <!-- pending -->
+          <div class="dash-card">
+            <div class="dash-card-icon dash-card-icon--amber" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <div class="dash-card-body">
+              <div class="dash-card-value dash-card-value--amber" id="stat-pending">—</div>
+              <div class="dash-card-label">รอดำเนินการ</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- BODY GRID: left col (recent + quick actions) / right col (map + workflow) -->
+      <div class="home-grid">
+
+        <div class="home-grid-left">
+
+          <!-- ② RECENT REPORTS -->
+          <section class="home-section" aria-labelledby="recent-title">
+            <div class="home-section-header">
+              <h2 class="home-section-title" id="recent-title">
+                <span class="home-section-icon" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                </span>
+                รายงานล่าสุด
+              </h2>
+              <a href="#report" data-page="report" class="home-section-link nav-link">ดูทั้งหมด →</a>
+            </div>
+            <div class="recent-card" id="recent-container">
+              <!-- populated by stats.js -->
+              <div class="home-loading">
+                <div class="spinner spinner--sm"></div>
+                <span>กำลังโหลด...</span>
+              </div>
+            </div>
+          </section>
+
+          <!-- ③ QUICK ACTIONS -->
+          <section class="home-section" aria-labelledby="actions-title">
+            <div class="home-section-header">
+              <h2 class="home-section-title" id="actions-title">
+                <span class="home-section-icon" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                </span>
+                การดำเนินการด่วน
+              </h2>
+            </div>
+            <div class="quick-actions-grid">
+
+              <button type="button" class="qa-card qa-card--coral nav-link" data-page="report" aria-label="สร้างรายงานใหม่">
+                <div class="qa-card-icon" aria-hidden="true">
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                </div>
+                <div class="qa-card-label">สร้างรายงาน</div>
+                <div class="qa-card-sub">บันทึกเหตุการณ์ใหม่</div>
+              </button>
+
+              <button type="button" class="qa-card qa-card--blue nav-link" data-page="report" data-view="list" aria-label="ดูรายการรายงาน">
+                <div class="qa-card-icon" aria-hidden="true">
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                </div>
+                <div class="qa-card-label">รายการรายงาน</div>
+                <div class="qa-card-sub">ค้นหาและจัดการ</div>
+              </button>
+
+              <button type="button" class="qa-card qa-card--green nav-link" data-page="report" data-view="map" aria-label="เปิดแผนที่">
+                <div class="qa-card-icon" aria-hidden="true">
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+                </div>
+                <div class="qa-card-label">เปิดแผนที่</div>
+                <div class="qa-card-sub">ดูตำแหน่งบนแผนที่</div>
+              </button>
+
+              <button type="button" class="qa-card qa-card--amber nav-link" data-page="guide" aria-label="คู่มือวิธีใช้">
+                <div class="qa-card-icon" aria-hidden="true">
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                </div>
+                <div class="qa-card-label">คู่มือวิธีใช้</div>
+                <div class="qa-card-sub">วิธีการใช้งานระบบ</div>
+              </button>
+
+            </div>
+          </section>
+
+        </div><!-- /home-grid-left -->
+
+        <div class="home-grid-right">
+
+          <!-- ④ THAILAND MAP PREVIEW -->
+          <section class="home-section" aria-labelledby="map-preview-title">
+            <div class="home-section-header">
+              <h2 class="home-section-title" id="map-preview-title">
+                <span class="home-section-icon" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                </span>
+                แผนที่รายงาน
+              </h2>
+              <a href="#report" data-page="report" data-view="map" class="home-section-link nav-link">ขยายแผนที่ →</a>
+            </div>
+            <div class="home-map-wrap">
+              <div id="home-map"></div>
+              <div id="home-map-loading" class="home-map-loading">
+                <div class="spinner spinner--sm"></div>
+                <span>กำลังโหลดแผนที่...</span>
+              </div>
+              <div class="home-map-badge" id="home-map-badge" aria-live="polite"></div>
+            </div>
+          </section>
+
+          <!-- ⑤ WORKFLOW PIPELINE -->
+          <section class="home-section" aria-labelledby="workflow-title">
+            <div class="home-section-header">
+              <h2 class="home-section-title" id="workflow-title">
+                <span class="home-section-icon" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                </span>
+                กระบวนการทำงาน
+              </h2>
+            </div>
+            <div class="workflow">
+              <div class="workflow-step workflow-step--active">
+                <div class="workflow-dot" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                </div>
+                <div class="workflow-content">
+                  <div class="workflow-label">รับรายงาน</div>
+                  <div class="workflow-desc">บันทึกเหตุการณ์และพิกัด GPS</div>
+                </div>
+              </div>
+              <div class="workflow-connector" aria-hidden="true"></div>
+
+              <div class="workflow-step">
+                <div class="workflow-dot" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+                <div class="workflow-content">
+                  <div class="workflow-label">ตรวจสอบข้อมูล</div>
+                  <div class="workflow-desc">เจ้าหน้าที่ยืนยันความถูกต้อง</div>
+                </div>
+              </div>
+              <div class="workflow-connector" aria-hidden="true"></div>
+
+              <div class="workflow-step">
+                <div class="workflow-dot" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+                </div>
+                <div class="workflow-content">
+                  <div class="workflow-label">วางแผนเส้นทาง</div>
+                  <div class="workflow-desc">กำหนดเส้นทางไปยังวัด</div>
+                </div>
+              </div>
+              <div class="workflow-connector" aria-hidden="true"></div>
+
+              <div class="workflow-step">
+                <div class="workflow-dot" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                </div>
+                <div class="workflow-content">
+                  <div class="workflow-label">จัดส่ง</div>
+                  <div class="workflow-desc">ดำเนินการรับ-ส่งผู้เสียชีวิต</div>
+                </div>
+              </div>
+              <div class="workflow-connector" aria-hidden="true"></div>
+
+              <div class="workflow-step workflow-step--end">
+                <div class="workflow-dot workflow-dot--success" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                </div>
+                <div class="workflow-content">
+                  <div class="workflow-label">เสร็จสิ้น</div>
+                  <div class="workflow-desc">ปิดรายงานและบันทึกผล</div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+        </div><!-- /home-grid-right -->
+      </div><!-- /home-grid -->
+
+      <!-- ⑥ ANALYTICS CHARTS -->
+      <section class="home-section" aria-labelledby="analytics-title">
+        <div class="home-section-header">
+          <h2 class="home-section-title" id="analytics-title">
+            <span class="home-section-icon" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            </span>
+            วิเคราะห์ข้อมูล
+          </h2>
+          <span class="home-section-updated" id="analytics-updated-at" aria-live="polite"></span>
+        </div>
+
+        <!-- Row 1: Monthly trend (wide) + Daily trend -->
+        <div class="chart-grid chart-grid--2">
+          <div class="chart-card">
+            <div class="chart-card-header">
+              <div class="chart-card-title">รายงานรายเดือน</div>
+              <div class="chart-card-sub">12 เดือนล่าสุด</div>
+            </div>
+            <div class="chart-body" id="chart-monthly"></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-card-header">
+              <div class="chart-card-title">แนวโน้มรายวัน</div>
+              <div class="chart-card-sub">30 วันล่าสุด</div>
+            </div>
+            <div class="chart-body" id="chart-daily"></div>
+          </div>
+        </div>
+
+        <!-- Row 2: Weekly trend + Gender donut -->
+        <div class="chart-grid chart-grid--2">
+          <div class="chart-card">
+            <div class="chart-card-header">
+              <div class="chart-card-title">แนวโน้มรายสัปดาห์</div>
+              <div class="chart-card-sub">12 สัปดาห์ล่าสุด</div>
+            </div>
+            <div class="chart-body" id="chart-weekly"></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-card-header">
+              <div class="chart-card-title">สัดส่วนเพศ</div>
+              <div class="chart-card-sub">รายงานทั้งหมด</div>
+            </div>
+            <div class="chart-body" id="chart-gender"></div>
+          </div>
+        </div>
+
+        <!-- Row 3: Province bar (full width) -->
+        <div class="chart-grid chart-grid--1">
+          <div class="chart-card">
+            <div class="chart-card-header">
+              <div class="chart-card-title">รายงานตามจังหวัด</div>
+              <div class="chart-card-sub">10 จังหวัดสูงสุด</div>
+            </div>
+            <div class="chart-body chart-body--tall" id="chart-province"></div>
+          </div>
+        </div>
+
+        <!-- Row 4: Cause of death (full width) -->
+        <div class="chart-grid chart-grid--1">
+          <div class="chart-card">
+            <div class="chart-card-header">
+              <div class="chart-card-title">สาเหตุการเสียชีวิต</div>
+              <div class="chart-card-sub">10 สาเหตุสูงสุด</div>
+            </div>
+            <div class="chart-body chart-body--tall" id="chart-cause"></div>
+          </div>
+        </div>
+
+      </section>
+
+    </div><!-- /home-body -->
+  </section>
+
+  <!-- REPORT / MAP PAGE -->
+  <section id="page-report" class="page">
+    <div class="report-toolbar">
+      <div class="view-toggle">
+        <button class="view-btn active" data-view="map">แผนที่</button>
+        <button class="view-btn" data-view="list">รายการ</button>
+      </div>
+      <div class="toolbar-actions">
+        <!-- Near me -->
+        <button type="button" id="near-me-btn" class="near-me-btn" title="ค้นหาจุดใกล้ฉัน">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/></svg>
+          ใกล้ฉัน
+        </button>
+        <button type="button" id="near-me-clear" class="near-me-clear hidden">✕ ล้าง</button>
+
+        <!-- Filters (map-view only) -->
+        <div class="map-filters" id="map-filters">
+          <select id="filter-province" class="map-filter-select" aria-label="กรองตามจังหวัด">
+            <option value="">จังหวัดทั้งหมด</option>
+          </select>
+          <select id="filter-gender" class="map-filter-select" aria-label="กรองตามเพศ">
+            <option value="">เพศทั้งหมด</option>
+            <option value="ชาย">ชาย</option>
+            <option value="หญิง">หญิง</option>
+            <option value="ไม่ทราบ">ไม่ทราบ</option>
+          </select>
+          <input type="date" id="filter-date-from" class="map-filter-select" aria-label="ตั้งแต่วันที่" title="ตั้งแต่วันที่">
+          <input type="date" id="filter-date-to" class="map-filter-select" aria-label="ถึงวันที่" title="ถึงวันที่">
+          <button type="button" id="filter-reset" class="map-filter-reset hidden" title="ล้างตัวกรองทั้งหมด">✕ ล้างตัวกรอง</button>
+        </div>
+
+        <!-- Fit to markers -->
+        <button type="button" id="fit-markers-btn" class="map-tool-btn" title="ซูมให้เห็นทุกจุด" aria-label="ซูมให้เห็นทุกจุด">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+        </button>
+
+        <!-- Text search -->
+        <div class="search-box">
+          <label for="search-input" class="visually-hidden">ค้นหารายงาน</label>
+          <input type="text" id="search-input" placeholder="ค้นหาชื่อ, สถานที่...">
+          <span id="search-result-count" class="visually-hidden" role="status" aria-live="polite"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="report-layout">
+      <div id="map-view" class="view-panel active">
+        <div id="map"></div>
+        <div id="map-loading" class="map-loading">
+          <div class="spinner"></div>
+          <span>กำลังโหลดแผนที่...</span>
+        </div>
+      </div>
+
+      <div id="list-view" class="view-panel">
+
+        <!-- ── TABLE FILTER BAR ── -->
+        <div class="tbl-filter-bar">
+          <div class="tbl-filter-left">
+            <div class="tbl-search-wrap">
+              <svg class="tbl-search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="text" id="tbl-search" class="tbl-search-input" placeholder="ค้นหาชื่อ, สถานที่, สาเหตุ..." aria-label="ค้นหารายงาน">
+            </div>
+            <select id="tbl-filter-province" class="tbl-filter-select" aria-label="กรองตามจังหวัด">
+              <option value="">จังหวัดทั้งหมด</option>
+            </select>
+            <select id="tbl-filter-status" class="tbl-filter-select" aria-label="กรองตามสถานะ">
+              <option value="">สถานะทั้งหมด</option>
+              <option value="pending">รอดำเนินการ</option>
+              <option value="verified">ตรวจสอบแล้ว</option>
+              <option value="transporting">กำลังจัดส่ง</option>
+              <option value="completed">เสร็จสิ้น</option>
+              <option value="rejected">ยกเลิก</option>
+            </select>
+            <input type="date" id="tbl-filter-date-from" class="tbl-filter-select" aria-label="ตั้งแต่วันที่" title="ตั้งแต่วันที่">
+            <input type="date" id="tbl-filter-date-to"   class="tbl-filter-select" aria-label="ถึงวันที่"     title="ถึงวันที่">
+            <button type="button" id="tbl-filter-reset" class="tbl-filter-reset hidden">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              ล้างตัวกรอง
+            </button>
+          </div>
+          <div class="tbl-filter-right">
+            <span class="tbl-count" id="tbl-count" aria-live="polite"></span>
+          </div>
+        </div>
+
+        <!-- ── TABLE ── -->
+        <div class="tbl-wrap">
+          <table class="report-table" id="report-table" aria-label="รายการรายงานเหตุการณ์">
+            <caption class="visually-hidden">รายการรายงานเหตุการณ์ทั้งหมด</caption>
+            <thead>
+              <tr>
+                <th scope="col" class="sortable" data-col="victimName">ชื่อผู้เสียชีวิต <span class="sort-arrow" aria-hidden="true"></span></th>
+                <th scope="col" class="sortable th-age" data-col="victimAge">อายุ <span class="sort-arrow" aria-hidden="true"></span></th>
+                <th scope="col" class="sortable th-gender" data-col="victimGender">เพศ <span class="sort-arrow" aria-hidden="true"></span></th>
+                <th scope="col" class="sortable" data-col="causeOfDeath">สาเหตุ <span class="sort-arrow" aria-hidden="true"></span></th>
+                <th scope="col" class="sortable" data-col="locationOfDeath">สถานที่ <span class="sort-arrow" aria-hidden="true"></span></th>
+                <th scope="col" class="sortable th-date" data-col="reportedDate">วันที่รับแจ้ง <span class="sort-arrow" aria-hidden="true"></span></th>
+                <th scope="col" class="th-status">สถานะ</th>
+                <th scope="col" class="th-actions"><span class="visually-hidden">การจัดการ</span></th>
+              </tr>
+            </thead>
+            <tbody id="report-table-body">
+              <tr><td colspan="8" class="table-empty">กำลังโหลด...</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ── PAGINATION ── -->
+        <div class="tbl-pagination" id="tbl-pagination" aria-label="การแบ่งหน้า">
+          <div class="tbl-page-info" id="tbl-page-info"></div>
+          <div class="tbl-page-controls">
+            <button type="button" class="tbl-page-btn" id="tbl-first"  aria-label="หน้าแรก"    title="หน้าแรก">«</button>
+            <button type="button" class="tbl-page-btn" id="tbl-prev"   aria-label="หน้าก่อน"   title="หน้าก่อน">‹</button>
+            <div class="tbl-page-numbers" id="tbl-page-numbers" role="list"></div>
+            <button type="button" class="tbl-page-btn" id="tbl-next"   aria-label="หน้าถัดไป"  title="หน้าถัดไป">›</button>
+            <button type="button" class="tbl-page-btn" id="tbl-last"   aria-label="หน้าสุดท้าย" title="หน้าสุดท้าย">»</button>
+          </div>
+          <div class="tbl-page-size">
+            <label for="tbl-page-size-select" class="tbl-page-size-label">แสดง</label>
+            <select id="tbl-page-size-select" class="tbl-filter-select" aria-label="จำนวนรายการต่อหน้า">
+              <option value="10">10</option>
+              <option value="25" selected>25</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+            </select>
+            <span class="tbl-page-size-label">รายการ</span>
+          </div>
+        </div>
+
+      </div>
+
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-intro" id="sidebar-intro">
+          <div class="intro-icon">📍</div>
+          <h2>ยินดีต้อนรับสู่ระบบรายงานเหตุการณ์</h2>
+          <p>กรุณาคลิกบนแผนที่เพื่อระบุพิกัด หรือใช้ปุ่มด้านล่างเพื่อระบุตำแหน่งอัตโนมัติ</p>
+
+          <!-- Location helpers shown in intro state -->
+          <div class="intro-location-actions">
+            <button type="button" id="intro-gps-btn" class="intro-loc-btn intro-loc-btn--primary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/></svg>
+              ใช้ตำแหน่งปัจจุบัน
+            </button>
+
+            <div class="intro-search-wrap">
+              <input type="text" id="intro-location-search" class="intro-search-input" placeholder="ค้นหาสถานที่ เช่น ถนนสุขุมวิท..." autocomplete="off" aria-label="ค้นหาสถานที่">
+              <div id="intro-search-results" class="location-search-results" role="listbox" aria-label="ผลการค้นหาสถานที่"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── PROGRESS INDICATOR ── -->
+        <div class="form-progress hidden" id="form-progress" aria-label="ขั้นตอนการกรอกข้อมูล">
+          <div class="progress-step active" data-step="1">
+            <div class="progress-dot">1</div>
+            <span>ตำแหน่ง</span>
+          </div>
+          <div class="progress-line"></div>
+          <div class="progress-step" data-step="2">
+            <div class="progress-dot">2</div>
+            <span>ข้อมูล</span>
+          </div>
+          <div class="progress-line"></div>
+          <div class="progress-step" data-step="3">
+            <div class="progress-dot">3</div>
+            <span>ไฟล์แนบ</span>
+          </div>
+        </div>
+
+        <form id="report-form" class="report-form hidden" novalidate>
+          <div class="form-header">
+            <button type="button" id="back-to-intro" class="link-btn">&larr; กลับ</button>
+            <h3 id="form-mode-title">บันทึกเหตุการณ์</h3>
+          </div>
+
+          <!-- ── STEP 1: LOCATION ── -->
+          <div class="form-section" id="form-step-1">
+            <div class="form-section-title">
+              <span class="form-section-num">1</span> ตำแหน่งเหตุการณ์
+            </div>
+
+            <!-- Coordinate display -->
+            <div class="coord-card" id="coord-display" role="status" aria-live="polite">
+              <div class="coord-card-icon" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              </div>
+              <div class="coord-card-body">
+                <div class="coord-card-label">พิกัดที่เลือก</div>
+                <div class="coord-card-value" id="coord-value">—</div>
+                <div class="coord-card-address" id="coord-address"></div>
+              </div>
+              <button type="button" id="gps-btn" class="coord-gps-btn" title="ใช้ตำแหน่งปัจจุบัน" aria-label="ใช้ตำแหน่ง GPS ปัจจุบัน">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/></svg>
+              </button>
+            </div>
+
+            <!-- Location search -->
+            <div class="field-group">
+              <label for="location-search" class="field-label">ค้นหาสถานที่</label>
+              <div class="location-search-wrap">
+                <input type="text" id="location-search" class="field-input" placeholder="พิมพ์ชื่อสถานที่หรือที่อยู่..." autocomplete="off" aria-label="ค้นหาสถานที่" aria-expanded="false" aria-haspopup="listbox">
+                <div id="location-search-results" class="location-search-results" role="listbox" aria-label="ผลการค้นหา"></div>
+              </div>
+            </div>
+
+            <input type="hidden" name="lat" id="input-lat">
+            <input type="hidden" name="lng" id="input-lng">
+            <input type="hidden" id="edit-id" value="">
+          </div>
+
+          <!-- ── STEP 2: VICTIM / EVENT DATA ── -->
+          <div class="form-section" id="form-step-2">
+            <div class="form-section-title">
+              <span class="form-section-num">2</span> ข้อมูลเหตุการณ์
+            </div>
+
+            <div class="field-group">
+              <label for="f-victimName" class="field-label">
+                ชื่อผู้เสียชีวิต
+                <span class="required-star" aria-hidden="true">*</span>
+              </label>
+              <input type="text" id="f-victimName" name="victimName" class="field-input" maxlength="200" required aria-required="true" placeholder="ระบุชื่อ-นามสกุล">
+              <div class="field-error" id="err-victimName" role="alert"></div>
+            </div>
+
+            <div class="field-row">
+              <div class="field-group">
+                <label for="f-victimAge" class="field-label">อายุ</label>
+                <input type="number" id="f-victimAge" name="victimAge" class="field-input" min="0" max="150" placeholder="ปี">
+                <div class="field-error" id="err-victimAge" role="alert"></div>
+              </div>
+              <div class="field-group">
+                <label for="f-victimGender" class="field-label">เพศ</label>
+                <select id="f-victimGender" name="victimGender" class="field-input">
+                  <option value="">-- เลือก --</option>
+                  <option value="ชาย">ชาย</option>
+                  <option value="หญิง">หญิง</option>
+                  <option value="ไม่ทราบ">ไม่ทราบ</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="field-group">
+              <label for="f-causeOfDeath" class="field-label">สาเหตุการเสียชีวิต</label>
+              <input type="text" id="f-causeOfDeath" name="causeOfDeath" class="field-input" maxlength="500" placeholder="เช่น อุบัติเหตุจราจร">
+            </div>
+
+            <div class="field-group">
+              <label class="field-label" id="reported-time-label">เวลาที่รับแจ้ง</label>
+              <div class="field-row" role="group" aria-labelledby="reported-time-label">
+                <div class="field-group" style="flex:1">
+                  <input type="date" id="f-reportedDate" name="reportedDate" class="field-input" aria-label="วันที่รับแจ้ง">
+                </div>
+                <div class="field-group" style="flex:1">
+                  <input type="time" id="f-reportedTime" name="reportedTime" class="field-input" aria-label="เวลาที่รับแจ้ง">
+                </div>
+              </div>
+            </div>
+
+            <div class="field-group">
+              <label for="f-locationOfDeath" class="field-label">สถานที่เสียชีวิต</label>
+              <input type="text" id="f-locationOfDeath" name="locationOfDeath" class="field-input" maxlength="300" placeholder="ชื่อถนน, จังหวัด">
+            </div>
+
+            <div class="field-group">
+              <label for="f-destinationTemple" class="field-label">วัดที่ต้องการไป</label>
+              <input type="text" id="f-destinationTemple" name="destinationTemple" class="field-input" maxlength="300" placeholder="ชื่อวัด">
+            </div>
+
+            <div class="field-group">
+              <label for="f-reportedBy" class="field-label">รายงานโดย</label>
+              <input type="text" id="f-reportedBy" name="reportedBy" class="field-input" maxlength="200" placeholder="ชื่อเจ้าหน้าที่หรือผู้แจ้ง">
+            </div>
+
+            <div class="field-group">
+              <label for="f-reporterPhone" class="field-label">เบอร์โทร</label>
+              <input type="tel" id="f-reporterPhone" name="reporterPhone" class="field-input" maxlength="20" inputmode="tel" autocomplete="tel" placeholder="เช่น 081-234-5678">
+              <div class="field-error" id="err-reporterPhone" role="alert"></div>
+            </div>
+
+            <div class="field-group">
+              <label for="f-reporterIdCard" class="field-label">
+                บัตรประชาชนผู้แจ้งเหตุ
+                <span class="field-hint">(13 หลัก)</span>
+              </label>
+              <input type="text" id="f-reporterIdCard" name="reporterIdCard" class="field-input" inputmode="numeric" pattern="\d{13}" maxlength="13" autocomplete="off" placeholder="เลขบัตรประชาชน 13 หลัก">
+              <div class="field-error" id="err-reporterIdCard" role="alert"></div>
+            </div>
+          </div>
+
+          <!-- ── STEP 3: ATTACHMENTS ── -->
+          <div class="form-section" id="form-step-3">
+            <div class="form-section-title">
+              <span class="form-section-num">3</span> ไฟล์แนบ
+              <span class="form-section-badge">ไม่บังคับ</span>
+            </div>
+
+            <div class="file-drop" id="file-drop">
+              <input type="file" name="attachments" id="attachments-input" multiple
+                     accept=".jpg,.jpeg,.png,.webp,.gif,.pdf,image/*,application/pdf"
+                     aria-label="อัปโหลดไฟล์แนบ">
+              <div class="file-drop-content">
+                <div class="file-drop-icon" aria-hidden="true">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>
+                </div>
+                <div class="file-drop-primary">คลิกหรือลากไฟล์มาวางที่นี่</div>
+                <div class="file-drop-secondary">JPG, PNG, WEBP, GIF, PDF — สูงสุด 10MB / ไฟล์ (สูงสุด 5 ไฟล์)</div>
+              </div>
+            </div>
+
+            <!-- File preview list -->
+            <div id="file-preview-list" class="file-preview-list" aria-live="polite"></div>
+          </div>
+
+          <button type="submit" class="create-btn" id="create-btn">
+            <span class="btn-label">บันทึกรายงาน</span>
+            <span class="btn-spinner hidden" aria-hidden="true"></span>
+          </button>
+
+          <p class="form-note">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            ข้อมูลถูกเก็บรักษาอย่างปลอดภัยและเป็นความลับ
+          </p>
+        </form>
+      </aside>
+
+      <!-- ── SUCCESS MODAL ── -->
+      <div id="success-modal" class="success-modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="success-modal-title">
+        <div class="success-modal-box">
+          <div class="success-modal-icon" aria-hidden="true">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          </div>
+          <h2 id="success-modal-title">บันทึกรายงานสำเร็จ</h2>
+          <p>รายงานของคุณถูกบันทึกในระบบเรียบร้อยแล้ว</p>
+          <div class="success-ref-box">
+            <div class="success-ref-label">หมายเลขอ้างอิง</div>
+            <div class="success-ref-number" id="success-ref-number">—</div>
+          </div>
+          <div class="success-modal-actions">
+            <button type="button" id="success-view-btn" class="create-btn" style="background:var(--accent)">
+              ดูบนแผนที่
+            </button>
+            <button type="button" id="success-close-btn" class="link-btn" style="margin-top:0">
+              ปิด
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GUIDE PAGE -->
+  <section id="page-guide" class="page">
+    <div class="guide-page-layout">
+
+      <!-- Page hero -->
+      <div class="guide-page-hero">
+        <div class="guide-page-hero-inner">
+          <div class="guide-hero-badge">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            คู่มือการใช้งาน
+          </div>
+          <h1 class="guide-page-title">วิธีการใช้งาน GEOGrave</h1>
+          <p class="guide-page-subtitle">ทำตามขั้นตอนง่ายๆ เพื่อบันทึกและจัดการข้อมูลเหตุการณ์บนท้องถนนได้อย่างมีประสิทธิภาพ</p>
+        </div>
+      </div>
+
+      <!-- Step cards grid -->
+      <div class="guide-steps-grid">
+
+        <!-- Step 1 -->
+        <article class="guide-step-card">
+          <div class="gsc-number" aria-label="ขั้นตอนที่ 1">1</div>
+          <div class="gsc-icon gsc-icon--blue">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          </div>
+          <div class="gsc-screenshot" aria-hidden="true">
+            <div class="gsc-screenshot-inner">
+              <div class="gsc-mock-bar"></div>
+              <div class="gsc-mock-hero"></div>
+              <div class="gsc-mock-cards">
+                <div class="gsc-mock-card"></div>
+                <div class="gsc-mock-card"></div>
+                <div class="gsc-mock-card"></div>
+                <div class="gsc-mock-card"></div>
+              </div>
+            </div>
+          </div>
+          <h3 class="gsc-title">หน้าหลัก (Dashboard)</h3>
+          <p class="gsc-desc">ดูภาพรวมสถิติรายงานทั้งหมด ได้แก่ จำนวนรายงาน การแบ่งตามเพศ รายงานวันนี้ และแผนภูมิแนวโน้มย้อนหลัง พร้อม Quick Actions สำหรับเข้าถึงฟังก์ชันสำคัญได้ทันที</p>
+          <div class="gsc-tags">
+            <span class="gsc-tag">สถิติ</span>
+            <span class="gsc-tag">แผนภูมิ</span>
+            <span class="gsc-tag">ภาพรวม</span>
+          </div>
+        </article>
+
+        <!-- Step 2 -->
+        <article class="guide-step-card">
+          <div class="gsc-number" aria-label="ขั้นตอนที่ 2">2</div>
+          <div class="gsc-icon gsc-icon--coral">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          </div>
+          <div class="gsc-screenshot" aria-hidden="true">
+            <div class="gsc-screenshot-inner">
+              <div class="gsc-mock-bar"></div>
+              <div class="gsc-mock-map">
+                <div class="gsc-mock-pin"></div>
+                <div class="gsc-mock-pin" style="left:55%;top:40%"></div>
+                <div class="gsc-mock-pin" style="left:30%;top:65%"></div>
+              </div>
+            </div>
+          </div>
+          <h3 class="gsc-title">คลิกบนแผนที่เพื่อปักหมุด</h3>
+          <p class="gsc-desc">ไปที่หน้า "เริ่มต้นใช้งาน" แล้วคลิกตำแหน่งที่เกิดเหตุบนแผนที่ หรือกดปุ่ม "ใช้ตำแหน่งปัจจุบัน" เพื่อระบุพิกัด GPS อัตโนมัติ ระบบจะแสดงที่อยู่โดยอัตโนมัติจาก Reverse Geocoding</p>
+          <div class="gsc-tags">
+            <span class="gsc-tag">แผนที่</span>
+            <span class="gsc-tag">GPS</span>
+            <span class="gsc-tag">พิกัด</span>
+          </div>
+        </article>
+
+        <!-- Step 3 -->
+        <article class="guide-step-card">
+          <div class="gsc-number" aria-label="ขั้นตอนที่ 3">3</div>
+          <div class="gsc-icon gsc-icon--green">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          </div>
+          <div class="gsc-screenshot" aria-hidden="true">
+            <div class="gsc-screenshot-inner">
+              <div class="gsc-mock-bar"></div>
+              <div class="gsc-mock-form">
+                <div class="gsc-mock-field"></div>
+                <div class="gsc-mock-field-row">
+                  <div class="gsc-mock-field"></div>
+                  <div class="gsc-mock-field"></div>
+                </div>
+                <div class="gsc-mock-field"></div>
+                <div class="gsc-mock-btn"></div>
+              </div>
+            </div>
+          </div>
+          <h3 class="gsc-title">กรอกข้อมูลเหตุการณ์</h3>
+          <p class="gsc-desc">กรอกชื่อผู้เสียชีวิต อายุ เพศ สาเหตุการเสียชีวิต และสถานที่ ระบบจะเติมวันที่และเวลาปัจจุบันให้อัตโนมัติ พร้อมตรวจสอบความถูกต้องของข้อมูลทุกช่องแบบ Real-time</p>
+          <div class="gsc-tags">
+            <span class="gsc-tag">แบบฟอร์ม</span>
+            <span class="gsc-tag">ตรวจสอบข้อมูล</span>
+            <span class="gsc-tag">อัตโนมัติ</span>
+          </div>
+        </article>
+
+        <!-- Step 4 -->
+        <article class="guide-step-card">
+          <div class="gsc-number" aria-label="ขั้นตอนที่ 4">4</div>
+          <div class="gsc-icon gsc-icon--amber">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+          </div>
+          <div class="gsc-screenshot" aria-hidden="true">
+            <div class="gsc-screenshot-inner">
+              <div class="gsc-mock-bar"></div>
+              <div class="gsc-mock-table">
+                <div class="gsc-mock-thead"></div>
+                <div class="gsc-mock-row"></div>
+                <div class="gsc-mock-row" style="opacity:.7"></div>
+                <div class="gsc-mock-row" style="opacity:.5"></div>
+              </div>
+            </div>
+          </div>
+          <h3 class="gsc-title">ดูและจัดการรายการ</h3>
+          <p class="gsc-desc">สลับไปที่มุมมอง "รายการ" เพื่อดูรายงานทั้งหมดในรูปแบบตาราง ค้นหา กรองตามจังหวัด/สถานะ/วันที่ และเรียงลำดับตามคอลัมน์ที่ต้องการ เจ้าหน้าที่สามารถแก้ไขหรือลบรายงานได้</p>
+          <div class="gsc-tags">
+            <span class="gsc-tag">ตาราง</span>
+            <span class="gsc-tag">ค้นหา</span>
+            <span class="gsc-tag">กรองข้อมูล</span>
+          </div>
+        </article>
+
+        <!-- Step 5 -->
+        <article class="guide-step-card">
+          <div class="gsc-number" aria-label="ขั้นตอนที่ 5">5</div>
+          <div class="gsc-icon gsc-icon--purple">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          </div>
+          <div class="gsc-screenshot" aria-hidden="true">
+            <div class="gsc-screenshot-inner">
+              <div class="gsc-mock-bar"></div>
+              <div class="gsc-mock-popup">
+                <div class="gsc-mock-popup-title"></div>
+                <div class="gsc-mock-popup-row"></div>
+                <div class="gsc-mock-popup-row"></div>
+                <div class="gsc-mock-popup-actions">
+                  <div class="gsc-mock-popup-btn"></div>
+                  <div class="gsc-mock-popup-btn" style="background:#fdf0ef"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <h3 class="gsc-title">ดูรายละเอียดบนแผนที่</h3>
+          <p class="gsc-desc">คลิกที่หมุดบนแผนที่เพื่อดู Popup แสดงรายละเอียดครบถ้วน ใช้ฟีเจอร์ "ใกล้ฉัน" เพื่อค้นหารายงานในรัศมี 5 กม. หรือเปิด Heatmap เพื่อดูความหนาแน่นในพื้นที่</p>
+          <div class="gsc-tags">
+            <span class="gsc-tag">Popup</span>
+            <span class="gsc-tag">ใกล้ฉัน</span>
+            <span class="gsc-tag">Heatmap</span>
+          </div>
+        </article>
+
+        <!-- Step 6 -->
+        <article class="guide-step-card">
+          <div class="gsc-number" aria-label="ขั้นตอนที่ 6">6</div>
+          <div class="gsc-icon gsc-icon--ink">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </div>
+          <div class="gsc-screenshot" aria-hidden="true">
+            <div class="gsc-screenshot-inner">
+              <div class="gsc-mock-bar"></div>
+              <div class="gsc-mock-modal">
+                <div class="gsc-mock-modal-title"></div>
+                <div class="gsc-mock-modal-field"></div>
+                <div class="gsc-mock-modal-field"></div>
+                <div class="gsc-mock-modal-btn"></div>
+              </div>
+            </div>
+          </div>
+          <h3 class="gsc-title">เข้าสู่ระบบเจ้าหน้าที่</h3>
+          <p class="gsc-desc">กดปุ่ม "เข้าสู่ระบบเจ้าหน้าที่" ที่มุมขวาบน เพื่อเปิดใช้งานสิทธิ์เต็มรูปแบบ ได้แก่ แก้ไข ลบรายงาน ดูเลขบัตรประชาชนผู้แจ้งเหตุ และจัดการข้อมูลสำคัญ</p>
+          <div class="gsc-tags">
+            <span class="gsc-tag">เจ้าหน้าที่</span>
+            <span class="gsc-tag">JWT</span>
+            <span class="gsc-tag">สิทธิ์</span>
+          </div>
+        </article>
+
+      </div><!-- /guide-steps-grid -->
+
+      <!-- Tips bar -->
+      <div class="guide-tips">
+        <div class="guide-tip">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span>ข้อมูลทุกรายการถูกเข้ารหัสและจัดเก็บอย่างปลอดภัย</span>
+        </div>
+        <div class="guide-tip">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          <span>รองรับการใช้งานบนมือถือและแท็บเล็ตทุกขนาดหน้าจอ</span>
+        </div>
+        <div class="guide-tip">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/></svg>
+          <span>ฟีเจอร์ GPS ต้องการอนุญาตจากเบราว์เซอร์ก่อนใช้งาน</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ABOUT PAGE -->
+  <section id="page-about" class="page">
+    <div class="about-page-layout">
+
+      <!-- Page hero -->
+      <div class="about-hero">
+        <div class="about-hero-inner">
+          <div class="about-hero-logo" aria-hidden="true">
+            <svg viewBox="0 0 80 90" xmlns="http://www.w3.org/2000/svg" width="48" height="54">
+              <rect x="35" y="2"  width="10" height="26" rx="2" fill="white"/>
+              <rect x="25" y="10" width="30" height="10" rx="2" fill="white"/>
+              <rect x="4" y="30" width="72" height="56" rx="10" fill="none" stroke="white" stroke-width="3.5"/>
+              <rect x="9"  y="34" width="62" height="26" rx="5" fill="white" opacity="0.2"/>
+              <rect x="52" y="37" width="16" height="8"  rx="2" fill="white" opacity="0.6"/>
+              <rect x="62" y="35" width="5"  height="4"  rx="1" fill="white" opacity="0.6"/>
+              <rect x="20" y="64" width="40" height="10" rx="3" fill="white" opacity="0.3"/>
+              <rect x="37" y="65.5" width="6"  height="7"  rx="1" fill="white"/>
+              <rect x="34" y="67.5" width="12" height="3"  rx="1" fill="white"/>
+              <rect x="8"  y="64" width="10" height="10" rx="2" fill="white" opacity="0.4" stroke="white" stroke-width="1.5"/>
+              <rect x="62" y="64" width="10" height="10" rx="2" fill="white" opacity="0.4" stroke="white" stroke-width="1.5"/>
+              <rect x="14" y="76" width="52" height="6" rx="3" fill="white" opacity="0.3"/>
+              <circle cx="18" cy="86" r="4" fill="white" opacity="0.5"/>
+              <circle cx="62" cy="86" r="4" fill="white" opacity="0.5"/>
+            </svg>
+            <span>GEO</span>
+          </div>
+          <h1 class="about-hero-title">GEOGrave</h1>
+          <p class="about-hero-tagline">Respectful Journeys, Trusted Hands</p>
+          <p class="about-hero-desc">ระบบแผนที่บันทึกและรายงานเหตุการณ์บนท้องถนน เพื่อการดูแลที่รวดเร็ว โปร่งใส และด้วยความเคารพ</p>
+          <div class="about-hero-badges">
+            <span class="about-badge">v1.1.0</span>
+            <span class="about-badge about-badge--green">Node.js 22</span>
+            <span class="about-badge about-badge--blue">SQLite R-Tree</span>
+            <span class="about-badge about-badge--purple">MIT License</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mission / Vision / Objectives -->
+      <div class="about-section">
+        <div class="about-section-header">
+          <h2 class="about-section-title">พันธกิจ วิสัยทัศน์ และวัตถุประสงค์</h2>
+        </div>
+        <div class="about-mvv-grid">
+          <div class="about-mvv-card about-mvv-card--mission">
+            <div class="about-mvv-icon" aria-hidden="true">🎯</div>
+            <h3>พันธกิจ</h3>
+            <p>รวบรวม จัดเก็บ และนำเสนอข้อมูลเหตุการณ์บนท้องถนนอย่างเป็นระบบ เพื่อสนับสนุนการตัดสินใจของหน่วยงานที่เกี่ยวข้องในการดูแลผู้เสียชีวิตด้วยความรวดเร็วและเคารพศักดิ์ศรี</p>
+          </div>
+          <div class="about-mvv-card about-mvv-card--vision">
+            <div class="about-mvv-icon" aria-hidden="true">🔭</div>
+            <h3>วิสัยทัศน์</h3>
+            <p>เป็นแพลตฟอร์มมาตรฐานสำหรับการบันทึกและติดตามเหตุการณ์บนท้องถนน ที่หน่วยงานรัฐและเอกชนสามารถใช้งานร่วมกันได้อย่างโปร่งใส ปลอดภัย และเชื่อถือได้ทั่วประเทศไทย</p>
+          </div>
+          <div class="about-mvv-card about-mvv-card--objective">
+            <div class="about-mvv-icon" aria-hidden="true">📋</div>
+            <h3>วัตถุประสงค์</h3>
+            <ul class="about-obj-list">
+              <li>ลดเวลาในการรับแจ้งเหตุและประสานงาน</li>
+              <li>สร้างฐานข้อมูลเชิงพื้นที่ที่แม่นยำ</li>
+              <li>รักษาความลับข้อมูลผู้แจ้งและผู้เสียชีวิต</li>
+              <li>สนับสนุนการวิเคราะห์แนวโน้มเชิงสถิติ</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Technology Stack -->
+      <div class="about-section">
+        <div class="about-section-header">
+          <h2 class="about-section-title">Technology Stack</h2>
+          <p class="about-section-sub">สถาปัตยกรรมที่ออกแบบมาเพื่อความน่าเชื่อถือ ประสิทธิภาพ และความปลอดภัย</p>
+        </div>
+        <div class="about-tech-grid">
+          <div class="about-tech-card">
+            <div class="about-tech-icon about-tech-icon--green" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            </div>
+            <div class="about-tech-name">Node.js 22 + Express</div>
+            <div class="about-tech-desc">Runtime และ HTTP framework สำหรับ API</div>
+          </div>
+          <div class="about-tech-card">
+            <div class="about-tech-icon about-tech-icon--blue" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+            </div>
+            <div class="about-tech-name">SQLite + R-Tree Index</div>
+            <div class="about-tech-desc">ACID transactions + spatial indexing</div>
+          </div>
+          <div class="about-tech-card">
+            <div class="about-tech-icon about-tech-icon--coral" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            </div>
+            <div class="about-tech-name">Leaflet.js + MarkerCluster</div>
+            <div class="about-tech-desc">Interactive GIS map + spatial search</div>
+          </div>
+          <div class="about-tech-card">
+            <div class="about-tech-icon about-tech-icon--amber" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </div>
+            <div class="about-tech-name">JWT + bcrypt</div>
+            <div class="about-tech-desc">Authentication &amp; PII protection</div>
+          </div>
+          <div class="about-tech-card">
+            <div class="about-tech-icon about-tech-icon--purple" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6v6H9z"/></svg>
+            </div>
+            <div class="about-tech-name">Docker + CI/CD</div>
+            <div class="about-tech-desc">Container deployment + GitHub Actions</div>
+          </div>
+          <div class="about-tech-card">
+            <div class="about-tech-icon about-tech-icon--ink" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            </div>
+            <div class="about-tech-name">Pure SVG Charts</div>
+            <div class="about-tech-desc">Zero-dependency data visualization</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- System Architecture -->
+      <div class="about-section">
+        <div class="about-section-header">
+          <h2 class="about-section-title">สถาปัตยกรรมระบบ</h2>
+        </div>
+        <div class="about-arch">
+          <div class="arch-layer arch-layer--client">
+            <div class="arch-layer-label">Browser (No Build Step)</div>
+            <div class="arch-modules">
+              <span class="arch-module">main.js</span>
+              <span class="arch-module">state.js</span>
+              <span class="arch-module">map-view.js</span>
+              <span class="arch-module">charts.js</span>
+              <span class="arch-module">table-view.js</span>
+            </div>
+          </div>
+          <div class="arch-arrow" aria-hidden="true">↕ fetch (JSON / multipart)</div>
+          <div class="arch-layer arch-layer--server">
+            <div class="arch-layer-label">Express Server</div>
+            <div class="arch-modules">
+              <span class="arch-module">Routes</span>
+              <span class="arch-module">JWT Auth</span>
+              <span class="arch-module">Multer</span>
+              <span class="arch-module">Validator</span>
+              <span class="arch-module">Rate Limit</span>
+            </div>
+          </div>
+          <div class="arch-arrow" aria-hidden="true">↕ ACID transactions</div>
+          <div class="arch-layer arch-layer--db">
+            <div class="arch-layer-label">SQLite (WAL mode)</div>
+            <div class="arch-modules">
+              <span class="arch-module">reports</span>
+              <span class="arch-module">attachments</span>
+              <span class="arch-module">users</span>
+              <span class="arch-module">R-Tree Index</span>
+              <span class="arch-module">Migrations</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Project Features -->
+      <div class="about-section">
+        <div class="about-section-header">
+          <h2 class="about-section-title">ฟีเจอร์หลักของระบบ</h2>
+        </div>
+        <div class="about-features-grid">
+          <div class="about-feature">
+            <div class="about-feature-icon" aria-hidden="true">🗺️</div>
+            <div>
+              <div class="about-feature-title">GIS Interactive Map</div>
+              <div class="about-feature-desc">R-Tree spatial index, heatmap, marker clustering, layer control, reverse geocoding</div>
+            </div>
+          </div>
+          <div class="about-feature">
+            <div class="about-feature-icon" aria-hidden="true">🔒</div>
+            <div>
+              <div class="about-feature-title">Security &amp; Privacy</div>
+              <div class="about-feature-desc">JWT HS256 algorithm-pinned, bcrypt cost-12, PII redaction, rate limiting</div>
+            </div>
+          </div>
+          <div class="about-feature">
+            <div class="about-feature-icon" aria-hidden="true">📊</div>
+            <div>
+              <div class="about-feature-title">Data Analytics</div>
+              <div class="about-feature-desc">6 SVG charts, monthly/daily/weekly trends, province &amp; cause analysis</div>
+            </div>
+          </div>
+          <div class="about-feature">
+            <div class="about-feature-icon" aria-hidden="true">🔄</div>
+            <div>
+              <div class="about-feature-title">Data Pipeline</div>
+              <div class="about-feature-desc">Versioned migrations, ETL dry-run, VACUUM INTO backup, quality audit</div>
+            </div>
+          </div>
+          <div class="about-feature">
+            <div class="about-feature-icon" aria-hidden="true">⚡</div>
+            <div>
+              <div class="about-feature-title">Performance</div>
+              <div class="about-feature-desc">N+1 eliminated, prepared-statement cache, pagination, lazy-loaded map</div>
+            </div>
+          </div>
+          <div class="about-feature">
+            <div class="about-feature-icon" aria-hidden="true">♿</div>
+            <div>
+              <div class="about-feature-title">Accessibility</div>
+              <div class="about-feature-desc">ARIA labels, skip link, focus-visible, aria-live regions, reduced-motion</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Meet the Team -->
+      <div class="about-section">
+        <div class="about-section-header">
+          <h2 class="about-section-title">ทีมพัฒนา</h2>
+          <p class="about-section-sub">ผู้อยู่เบื้องหลังการพัฒนาระบบ GEOGrave</p>
+        </div>
+        <div class="about-team-grid">
+          <div class="about-team-card">
+            <div class="about-team-avatar" aria-hidden="true">A</div>
+            <div class="about-team-name">Atip</div>
+            <div class="about-team-role">Data Engineer</div>
+            <div class="about-team-skills">
+              <span class="gsc-tag">ETL</span>
+              <span class="gsc-tag">Analytics</span>
+              <span class="gsc-tag">Pipeline</span>
+            </div>
+          </div>
+          <div class="about-team-card">
+            <div class="about-team-avatar about-team-avatar--coral" aria-hidden="true">G</div>
+            <div class="about-team-name">GEOGrave Team</div>
+            <div class="about-team-role">Full-Stack Engineer</div>
+            <div class="about-team-skills">
+              <span class="gsc-tag">Node.js</span>
+              <span class="gsc-tag">SQLite</span>
+              <span class="gsc-tag">GIS</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="site-footer" role="contentinfo">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="footer-logo">
+        <span class="brand-mark">GEO<span class="brand-mark-accent">Grave</span></span>
+      </div>
+      <p class="footer-tagline">Respectful Journeys, Trusted Hands</p>
+      <p class="footer-desc">ระบบแผนที่บันทึกและรายงานเหตุการณ์บนท้องถนน สำหรับหน่วยงานที่เกี่ยวข้องทั่วประเทศไทย</p>
+    </div>
+
+    <div class="footer-links-group">
+      <div class="footer-col">
+        <h4 class="footer-col-title">ระบบ</h4>
+        <ul class="footer-col-list">
+          <li><a href="#home" data-page="home" class="footer-link nav-link">หน้าหลัก</a></li>
+          <li><a href="#report" data-page="report" class="footer-link nav-link">เริ่มต้นใช้งาน</a></li>
+          <li><a href="#guide" data-page="guide" class="footer-link nav-link">คู่มือวิธีใช้</a></li>
+          <li><a href="#about" data-page="about" class="footer-link nav-link">เกี่ยวกับพวกเรา</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4 class="footer-col-title">เอกสาร</h4>
+        <ul class="footer-col-list">
+          <li><a href="https://github.com/Atip-Infa/geograve/blob/main/docs/api.md" target="_blank" rel="noopener noreferrer" class="footer-link">API Reference</a></li>
+          <li><a href="https://github.com/Atip-Infa/geograve/blob/main/docs/database.md" target="_blank" rel="noopener noreferrer" class="footer-link">Database Docs</a></li>
+          <li><a href="https://github.com/Atip-Infa/geograve/blob/main/docs/deployment.md" target="_blank" rel="noopener noreferrer" class="footer-link">Deployment Guide</a></li>
+          <li><a href="https://github.com/Atip-Infa/geograve/blob/main/CHANGELOG.md" target="_blank" rel="noopener noreferrer" class="footer-link">Changelog</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4 class="footer-col-title">ติดต่อและนโยบาย</h4>
+        <ul class="footer-col-list">
+          <li><a href="https://github.com/Atip-Infa/geograve" target="_blank" rel="noopener noreferrer" class="footer-link">GitHub Repository</a></li>
+          <li><a href="https://github.com/Atip-Infa/geograve/issues" target="_blank" rel="noopener noreferrer" class="footer-link">รายงานปัญหา</a></li>
+          <li><a href="https://github.com/Atip-Infa/geograve/blob/main/SECURITY.md" target="_blank" rel="noopener noreferrer" class="footer-link">นโยบายความปลอดภัย</a></li>
+          <li><a href="https://github.com/Atip-Infa/geograve/blob/main/LICENSE" target="_blank" rel="noopener noreferrer" class="footer-link">MIT License</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <div class="footer-bottom-inner">
+      <span class="footer-copyright">&copy; 2025 GEOGrave. สงวนลิขสิทธิ์ภายใต้ MIT License</span>
+      <div class="footer-bottom-right">
+        <span class="footer-version">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          Version 1.1.0
+        </span>
+        <span class="footer-built">Built with Node.js 22 + SQLite</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ── DELETE CONFIRMATION MODAL ── -->
+<div id="delete-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="delete-modal-title">
+  <div class="modal-box modal-box--sm">
+    <h2 id="delete-modal-title">ยืนยันการลบ</h2>
+    <p id="delete-modal-body" class="modal-hint"></p>
+    <div class="delete-modal-actions">
+      <button type="button" id="delete-modal-confirm" class="btn-delete-confirm">ลบรายงาน</button>
+      <button type="button" id="delete-modal-cancel"  class="btn-delete-cancel">ยกเลิก</button>
+    </div>
+  </div>
+</div>
+
+<div id="auth-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="auth-modal-title">
+  <div class="modal-box">
+    <button type="button" id="auth-modal-close" class="modal-close" aria-label="ปิดหน้าต่างเข้าสู่ระบบ">&times;</button>
+    <h2 id="auth-modal-title">เข้าสู่ระบบเจ้าหน้าที่</h2>
+    <p class="modal-hint">สำหรับเจ้าหน้าที่ที่ได้รับอนุญาตในการแก้ไข/ลบรายงาน และดูข้อมูลที่ละเอียดอ่อน</p>
+    <form id="auth-form">
+      <label for="auth-username">ชื่อผู้ใช้</label>
+      <input type="text" id="auth-username" name="username" autocomplete="username" required>
+      <label for="auth-password">รหัสผ่าน</label>
+      <input type="password" id="auth-password" name="password" autocomplete="current-password" required>
+      <div id="auth-error" class="auth-error" role="alert"></div>
+      <button type="submit" class="create-btn" id="auth-submit">
+        <span class="btn-label">เข้าสู่ระบบ</span>
+      </button>
+    </form>
+  </div>
+</div>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
