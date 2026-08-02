@@ -1,6 +1,7 @@
-# Pin to a specific minor release so base image updates are deliberate,
-# not silent. Update this line when upgrading Node intentionally.
-FROM node:22.15-alpine3.21
+# node:22-slim is Debian-based and includes a full SQLite build with the
+# R-Tree virtual table extension that GEOGrave's spatial index requires.
+# Alpine's SQLite omits R-Tree, so we use slim instead.
+FROM node:22-slim
 
 WORKDIR /app
 
@@ -11,10 +12,10 @@ RUN npm ci --omit=dev && npm cache clean --force
 
 COPY . .
 
-# Create data/uploads dirs, create a least-privilege user, and hand
-# ownership over before dropping to that user.
+# Create data/uploads dirs, create a least-privilege user (Debian syntax),
+# and hand ownership over before dropping to that user.
 RUN mkdir -p /app/data /app/uploads \
-  && addgroup -S geograve && adduser -S geograve -G geograve \
+  && groupadd -r geograve && useradd -r -g geograve geograve \
   && chown -R geograve:geograve /app
 
 USER geograve
